@@ -1,0 +1,25 @@
+{
+  "name": "heyseo-mcp-google-search-console",
+  "version": "1.0.0",
+  "description": "HeySEO MCP Google Search Console - MCP server for Google Search Console API",
+  "type": "module",
+  "main": "dist/index.js",
+  "bin": {
+    "heyseo-gsc": "dist/index.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "dev": "tsc --watch"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.27.1",
+    "google-auth-library": "^9.14.0",
+    "googleapis": "^144.0.0",
+    "open": "^10.1.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.14.0",
+    "typescript": "^5.5.0"
+  }
+}

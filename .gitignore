@@ -1,0 +1,10 @@
+node_modules/
+dist/
+.env
+*.js.map
+*.d.ts.map
+
+# OAuth credentials and tokens - NEVER commit these
+client_secret*.json
+token*.json
+*.credentials.json
