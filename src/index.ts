@@ -38,6 +38,7 @@ import {
   getCachedSites,
   loadSitesCache,
 } from "./cache.js";
+import { setupProject } from "./tools/setup.js";
 import { errorResult, successResult } from "./utils/errors.js";
 
 const ACCOUNT_ID_PROP = {
@@ -64,6 +65,43 @@ const server = new Server(
 
 server.setRequestHandler(ListToolsRequestSchema, async () => ({
   tools: [
+    // ── Setup / Onboarding ──────────────────────────────────────────
+    {
+      name: "setup_project",
+      description:
+        'Guided setup for a Google Cloud project. Provides step-by-step instructions customized to your app name and email. Use this FIRST when configuring a new project. Diagnoses common errors like 403 access_denied. Steps: "check" (diagnose issues), "full" (complete guide), "enable_api", "consent_screen", "create_credentials", "download", "add_to_mcp".',
+      inputSchema: {
+        type: "object" as const,
+        properties: {
+          appName: {
+            type: "string",
+            description:
+              'Name of your Google Cloud app/project (e.g. "heyseo-gsc", "my-seo-tool"). This is the name you see in Google Cloud Console.',
+          },
+          email: {
+            type: "string",
+            description:
+              "Google account email that will be used to authorize (e.g. user@gmail.com). Must be added as Test User in OAuth consent screen.",
+          },
+          step: {
+            type: "string",
+            enum: [
+              "check",
+              "full",
+              "enable_api",
+              "consent_screen",
+              "create_credentials",
+              "download",
+              "add_to_mcp",
+            ],
+            description:
+              '"check" = diagnose what\'s wrong (default). "full" = complete step-by-step guide. Or pick a specific step.',
+          },
+        },
+        required: ["appName", "email"],
+      },
+    },
+
     // ── Account Management ────────────────────────────────────────────
     {
       name: "list_accounts",
@@ -459,6 +497,10 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
   const toolArgs = (args || {}) as Record<string, unknown>;
 
   switch (name) {
+    // ── Setup / Onboarding ──
+    case "setup_project":
+      return await setupProject(toolArgs);
+
     // ── Account Management ──
     case "list_accounts": {
       try {
